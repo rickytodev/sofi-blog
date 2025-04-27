@@ -2,14 +2,11 @@
 import { fetchMenuData } from "@src/services/getMenu.js";
 import { flatListToHierarchical } from "@utils/flatListToHierarchical";
 
-
-
 // Get current page URL path
 const pagePathname = Astro.url.pathname;
 
 // Fetch menu data from the API/service
 const menuData = await fetchMenuData("menu");
-
 
 // Check if menu items exist and convert to array
 // If menuItems doesn't exist, use empty array as fallback
@@ -19,7 +16,6 @@ const menuItems = Array.isArray(menuData?.menu?.menuItems?.nodes)
 
 // Convert flat menu list into a hierarchical structure (parent-child relationship)
 const hierarchicalMenu = flatListToHierarchical(menuItems);
-
 ---
 
 <!-- Navigation menu component -->
@@ -51,26 +47,26 @@ const hierarchicalMenu = flatListToHierarchical(menuItems);
             data-astro-prefetch="hover"
           >
             {item.label}
+            {item.children.length > 0 && (
+              <iconify-icon class="dropdown__icon" icon="gridicons:dropdown" />
+            )}
           </a>
           {/* If item has children, create dropdown menu */}
           {item.children.length > 0 && (
-            <>
-              <iconify-icon class="dropdown__icon" icon="gridicons:dropdown" />
-              <ul class="dropdown">
-                {/* Map through child items */}
-                {item.children.map((child) => (
-                  <li class="dropdown__item">
-                    <a
-                      class="dropdown__link"
-                      href={`/categories/${child.slug}`}
-                      data-astro-prefetch="hover"
-                    >
-                      {child.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul class="dropdown">
+              {/* Map through child items */}
+              {item.children.map((child) => (
+                <li class="dropdown__item">
+                  <a
+                    class="dropdown__link"
+                    href={`/categories/${child.slug}`}
+                    data-astro-prefetch="hover"
+                  >
+                    {child.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
           )}
         </li>
       ))
